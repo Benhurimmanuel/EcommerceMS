@@ -8,21 +8,25 @@ const STATUS_CODES = {
 
 class AppError extends Error {
   constructor(
-    name,
-    statusCode,
-    description,
-    isOperational,
-    errorStack,
-    logingErrorResponse
+    name = "Error",
+    statusCode = STATUS_CODES.INTERNAL_ERROR,
+    description = "Something went wrong",
+    isOperational = true,
+    errorStack = null,
+    loggingErrorResponse = null
   ) {
     super(description);
     Object.setPrototypeOf(this, new.target.prototype);
+
     this.name = name;
     this.statusCode = statusCode;
     this.isOperational = isOperational;
     this.errorStack = errorStack;
-    this.logError = logingErrorResponse;
-    Error.captureStackTrace(this);
+    this.logError = loggingErrorResponse;
+
+    // if (Error.captureStackTrace) {
+    //   Error.captureStackTrace(this);
+    // }
   }
 }
 

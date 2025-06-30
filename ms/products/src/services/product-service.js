@@ -2,7 +2,6 @@ const { ProductRepository } = require("../database");
 const { FormateData } = require("../utils");
 const { APIError } = require('../utils/app-errors');
 
-// All Business logic will be here
 class ProductService {
 
     constructor() {
@@ -11,10 +10,10 @@ class ProductService {
 
     async CreateProduct(productInputs) {
         try {
-            const productResult = await this.repository.CreateProduct(productInputs)
+            const productResult = await this.repository.CreateProduct(productInputs);
             return FormateData(productResult);
         } catch (err) {
-            throw new APIError('Data Not found')
+            throw new APIError('API Error', 500, 'Failed to create product');
         }
     }
 
@@ -22,40 +21,36 @@ class ProductService {
         try {
             const products = await this.repository.Products();
 
-            let categories = {};
-
-            products.map(({ type }) => {
+            const categories = {};
+            products.forEach(({ type }) => {
                 categories[type] = type;
             });
 
             return FormateData({
                 products,
                 categories: Object.keys(categories),
-            })
-
+            });
         } catch (err) {
-            throw new APIError('Data Not found')
+            throw new APIError('API Error', 500, 'Unable to fetch products');
         }
     }
-
 
     async GetProductDescription(productId) {
         try {
             const product = await this.repository.FindById(productId);
-            return FormateData(product)
+            return FormateData(product);
         } catch (err) {
-            throw new APIError('Data Not found')
+            throw new APIError('API Error', 500, 'Product description not found');
         }
     }
 
     async GetProductsByCategory(category) {
         try {
             const products = await this.repository.FindByCategory(category);
-            return FormateData(products)
+            return FormateData(products);
         } catch (err) {
-            throw new APIError('Data Not found')
+            throw new APIError('API Error', 500, 'Category products not found');
         }
-
     }
 
     async GetSelectedProducts(selectedIds) {
@@ -63,28 +58,36 @@ class ProductService {
             const products = await this.repository.FindSelectedProducts(selectedIds);
             return FormateData(products);
         } catch (err) {
-            throw new APIError('Data Not found')
+            throw new APIError('API Error', 500, 'Failed to fetch selected products');
         }
     }
 
     async GetProductById(productId) {
         try {
-            return await this.repository.FindById(productId);
+            const product = await this.repository.FindById(productId);
+            return product;
         } catch (err) {
-            throw new APIError('Data Not found')
+            throw new APIError('API Error', 500, 'Product not found');
         }
     }
-    async GetProductPayload(userId, { productId, qty, }, event) {
-        const product = await this.repository.FindById(productId)
-        if (product) {
+
+    async GetProductPayload(userId, { productId, qty }, event) {
+        try {
+            const product = await this.repository.FindById(productId);
+            if (!product) {
+                throw new APIError('Product Error', 404, 'Product not found');
+            }
+
             const payload = {
-                event: event,
+                event,
                 data: { userId, product, qty }
             };
-            return FormateData(payload)
-        } else return FormateData({ error: "No Product Available" })
-    }
 
+            return FormateData(payload);
+        } catch (err) {
+            throw new APIError('API Error', 500, err.message || 'Failed to build product payload');
+        }
+    }
 }
 
 module.exports = ProductService;

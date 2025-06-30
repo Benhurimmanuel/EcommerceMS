@@ -49,3 +49,8 @@ module.exports.FormateData = (data) => {
     throw new Error("Data Not found!");
   }
 };
+module.exports.PublishCustomerEvent = (payload) => {
+  axios.post("http://localhost:8000/customer/app-events", {
+    payload
+  })
+}

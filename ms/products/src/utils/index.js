@@ -52,16 +52,16 @@ module.exports.FormateData = (data) => {
 };
 
 module.exports.PublishCustomerEvent = (payload) => {
-  axios.post("http://locahost:8000/customer/app-events", {
+  axios.post("http://localhost:8000/customer/app-events", {
     payload
   })
 }
 module.exports.PublishProductEvent = (payload) => {
-  axios.post("http://locahost:8000/customer/app-events", {
+  axios.post("http://localhost:8000/products/app-events", {
     payload
   })
 }
 module.exports.PublishShoppingEvent = (payload) => {
-  axios.post("http://locahost:8000/customer/app-events", { payload })
+  axios.post("http://localhost:8000/shopping/app-events", { payload })
 
 }

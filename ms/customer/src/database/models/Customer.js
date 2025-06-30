@@ -8,35 +8,36 @@ const CustomerSchema = new Schema({
     salt: String,
     phone: String,
     address: [
-        { type: Schema.Types.ObjectId, ref: 'address', require: true }
+        { type: Schema.Types.ObjectId, ref: 'address', required: true }
     ],
     cart: [
         {
             product: {
-                _id: { type: String, require: true },
+                _id: { type: String, required: true },
                 name: { type: String },
                 banner: { type: String },
-                price: { type: Number }
+                price: { type: Number },
             },
-            unit: { type: Number, require: true }
+            unit: { type: Number, required: true }
         }
     ],
     wishlist: [
         {
-            _id: { type: String, require: true },
+            _id: { type: String, required: true },
             name: { type: String },
             description: { type: String },
             banner: { type: String },
-            available: { type: Boolean },
-            price: { type: Number }
-        },
+            available: { type: Boolean }, // fixed typo
+            price: { type: Number },
+        }
     ],
     orders: [
         {
-            _id: { type: String, require: true },
+            _id: { type: String, required: true },
             amount: { type: String },
-            datae: { type: Date, default: Date.now() }
-        }]
+            date: { type: Date, default: Date.now } // fixed default
+        }
+    ]
 }, {
     toJSON: {
         transform(doc, ret) {
@@ -48,4 +49,4 @@ const CustomerSchema = new Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model('customer', CustomerSchema);
+module.exports = mongoose.model('Customer', CustomerSchema);
